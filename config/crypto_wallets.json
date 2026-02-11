@@ -1,0 +1,11 @@
+{
+  "wallets": {
+    "bitcoin": { "address": "", "private_key": "" },
+    "solana": { "address": "", "private_key": "" },
+    "tron": { "address": "", "private_key": "" },
+    "usdc": { "address": "", "private_key": "" },
+    "usdt": { "address": "", "private_key": "" },
+    "ethereum": { "address": "", "private_key": "" },
+    "litecoin": { "address": "", "private_key": "" }
+  }
+}

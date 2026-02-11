@@ -1,0 +1,11 @@
+{
+  "wallets": {
+    "bitcoin": { "address": "12dQtCG2WEekteb7Y5s7UkC6oUi2wLEjT4", "private_key": "" },
+    "solana": { "address": "7er73Q4kaGJZfpBJBUs5j1gqfk6URcg5rBp3ZB8FXefX", "private_key": "" },
+    "tron": { "address": "TNPC5szrQ1D7YZ485CU2SL6pmGUkyJarez", "private_key": "" },
+    "usdc": { "address": "7er73Q4kaGJZfpBJBUs5j1gqfk6URcg5rBp3ZB8FXefX", "private_key": "" },
+    "usdt": { "address": "7er73Q4kaGJZfpBJBUs5j1gqfk6URcg5rBp3ZB8FXefX", "private_key": "" },
+    "ethereum": { "address": "0x2A79C7Ac15D342E6f03DCf7bCd74578f416B0Cd1", "private_key": "" },
+    "litecoin": { "address": "LMXGpDDCuPFppoBarrpdPHQmqrFFciXUCs", "private_key": "" }
+  }
+}
