@@ -1,4 +1,4 @@
-# Upsun configuration, generated using AI at: 2026-02-11T22:04:20-05:00
+# Upsun configuration, generated using AI at: 2026-02-11T22:14:44-05:00
 # AI can make mistakes. Please modify this file to suit your needs.
 applications:
   app:
@@ -17,16 +17,7 @@ applications:
       app_data:
         source: storage
 
-    variables:
-      env:
-        PYTHONUNBUFFERED: '1'
-
-    relationships:
-      database: {}
-
-services:
-  database:
-    type: postgresql:18
+services: {}
 
 routes:
   https://{default}/:
