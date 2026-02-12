@@ -23,5 +23,15 @@ async def app_lifespan(_: FastAPI):
     
     os.makedirs(get_app_data_directory_env(), exist_ok=True)
     await create_db_and_tables()
-    await check_llm_and_image_provider_api_or_model_availability()
+    try:
+        await check_llm_and_image_provider_api_or_model_availability()
+    except Exception as e:
+        # Do not block server startup by default on provider/config validation.
+        # Enable strict behavior explicitly when fail-fast is desired.
+        strict_startup_checks = (
+            os.getenv("STRICT_STARTUP_CHECKS", "false").strip().lower() == "true"
+        )
+        if strict_startup_checks:
+            raise
+        print(f"Startup validation warning: {e}")
     yield

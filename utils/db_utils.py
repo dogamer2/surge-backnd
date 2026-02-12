@@ -12,19 +12,33 @@ import ssl
 def get_database_url_and_connect_args() -> tuple[str, dict]:
     database_url = get_supabase_db_url_env() or get_database_url_env()
     if not database_url:
-        allow_sqlite_fallback = (get_allow_sqlite_fallback_env() or "").strip().lower() in {
+        strict_database_url = os.getenv("STRICT_DATABASE_URL", "").strip().lower() in {
             "1",
             "true",
             "yes",
             "on",
         }
+        allow_sqlite_fallback = (
+            (get_allow_sqlite_fallback_env() or "").strip().lower()
+            in {"1", "true", "yes", "on"}
+        )
+        if strict_database_url and not allow_sqlite_fallback:
+            raise RuntimeError(
+                "No database URL configured. Set SUPABASE_DB_URL for cloud deployment."
+            )
         if allow_sqlite_fallback:
             database_url = "sqlite:///" + os.path.join(
                 get_app_data_directory_env() or "/tmp/surge-pptx", "fastapi.db"
             )
         else:
-            raise RuntimeError(
-                "No database URL configured. Set SUPABASE_DB_URL for cloud deployment."
+            # Keep startup resilient in source deploys where env vars are not yet configured.
+            # Set STRICT_DATABASE_URL=true to enforce DB URL presence.
+            print(
+                "WARNING: No SUPABASE_DB_URL/DATABASE_URL set. "
+                "Falling back to local SQLite at /tmp."
+            )
+            database_url = "sqlite:///" + os.path.join(
+                get_app_data_directory_env() or "/tmp/surge-pptx", "fastapi.db"
             )
 
     if database_url.startswith("sqlite://"):
