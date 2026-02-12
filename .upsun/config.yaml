@@ -1,0 +1,34 @@
+# Upsun configuration, generated using AI at: 2026-02-11T22:04:20-05:00
+# AI can make mistakes. Please modify this file to suit your needs.
+applications:
+  app:
+    type: python:3.13
+
+    hooks:
+      build: |
+        set -ex
+        pip install -r requirements.txt
+
+    web:
+      commands:
+        start: python server.py
+
+    mounts:
+      app_data:
+        source: storage
+
+    variables:
+      env:
+        PYTHONUNBUFFERED: '1'
+
+    relationships:
+      database: {}
+
+services:
+  database:
+    type: postgresql:18
+
+routes:
+  https://{default}/:
+    type: upstream
+    upstream: app:http
