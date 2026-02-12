@@ -1,4 +1,4 @@
-# Upsun configuration, generated using AI at: 2026-02-11T22:14:44-05:00
+# Upsun configuration, generated using AI at: 2026-02-11T22:18:44-05:00
 # AI can make mistakes. Please modify this file to suit your needs.
 applications:
   app:
@@ -16,8 +16,6 @@ applications:
     mounts:
       app_data:
         source: storage
-
-services: {}
 
 routes:
   https://{default}/:

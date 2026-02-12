@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 import os
+import asyncio
 
 from fastapi import FastAPI
 
@@ -20,17 +21,28 @@ async def app_lifespan(_: FastAPI):
     """
     # Validate and report configuration on startup
     setup_config_logging()
-    
-    os.makedirs(get_app_data_directory_env(), exist_ok=True)
-    await create_db_and_tables()
+    strict_startup_checks = (
+        os.getenv("STRICT_STARTUP_CHECKS", "false").strip().lower() == "true"
+    )
+
+    app_data_dir = get_app_data_directory_env() or "/tmp/surge-pptx"
+    os.makedirs(app_data_dir, exist_ok=True)
+
+    # Keep startup resilient on Cloud Run: DB init can hang when networking/env is misconfigured.
+    # Set STRICT_STARTUP_CHECKS=true to fail fast instead.
+    db_startup_timeout_seconds = float(os.getenv("DB_STARTUP_TIMEOUT_SECONDS", "20"))
+    try:
+        await asyncio.wait_for(create_db_and_tables(), timeout=db_startup_timeout_seconds)
+    except Exception as e:
+        if strict_startup_checks:
+            raise
+        print(f"Startup DB warning: {e}")
+
     try:
         await check_llm_and_image_provider_api_or_model_availability()
     except Exception as e:
         # Do not block server startup by default on provider/config validation.
         # Enable strict behavior explicitly when fail-fast is desired.
-        strict_startup_checks = (
-            os.getenv("STRICT_STARTUP_CHECKS", "false").strip().lower() == "true"
-        )
         if strict_startup_checks:
             raise
         print(f"Startup validation warning: {e}")
