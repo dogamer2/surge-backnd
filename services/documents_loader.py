@@ -80,7 +80,10 @@ class DocumentsLoader:
         document: str = ""
 
         if load_text:
-            document = self.docling_service.parse_to_markdown(file_path)
+            try:
+                document = self.docling_service.parse_to_markdown(file_path)
+            except RuntimeError as exc:
+                raise HTTPException(status_code=503, detail=str(exc)) from exc
 
         if load_images:
             image_paths = await self.get_page_images_from_pdf_async(file_path, temp_dir)
@@ -92,10 +95,16 @@ class DocumentsLoader:
             return await asyncio.to_thread(file.read)
 
     def load_msword(self, file_path: str) -> str:
-        return self.docling_service.parse_to_markdown(file_path)
+        try:
+            return self.docling_service.parse_to_markdown(file_path)
+        except RuntimeError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
 
     def load_powerpoint(self, file_path: str) -> str:
-        return self.docling_service.parse_to_markdown(file_path)
+        try:
+            return self.docling_service.parse_to_markdown(file_path)
+        except RuntimeError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
 
     @classmethod
     def get_page_images_from_pdf(cls, file_path: str, temp_dir: str) -> List[str]:
