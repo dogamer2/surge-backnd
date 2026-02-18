@@ -1,5 +1,6 @@
 from typing import List
 from fastapi import APIRouter, Depends, File, UploadFile, HTTPException, Request
+from fastapi.responses import RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 
@@ -124,6 +125,13 @@ async def get_uploaded_images(sql_session: AsyncSession = Depends(get_async_sess
         raise HTTPException(
             status_code=500, detail=f"Failed to retrieve uploaded images: {str(e)}"
         )
+
+
+@IMAGES_ROUTER.get("/{image_name}")
+async def get_image_legacy_path(image_name: str):
+    # Backward compatibility for older frontend bundles that still call
+    # /api/v1/ppt/images/<filename>.jpg instead of /app_data/images/<filename>.jpg
+    return RedirectResponse(url=f"/app_data/images/{os.path.basename(image_name)}")
 
 
 @IMAGES_ROUTER.delete("/{id}", status_code=204)
