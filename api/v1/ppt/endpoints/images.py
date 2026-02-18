@@ -21,6 +21,9 @@ def to_public_image_path(path_value: str) -> str:
         return path_value
     if path_value.startswith("http") or path_value.startswith("/static/") or path_value.startswith("/app_data/"):
         return path_value
+    if path_value.startswith("/api/v1/ppt/images/"):
+        filename = os.path.basename(path_value)
+        return f"/app_data/images/{filename}"
 
     normalized = path_value.replace("\\", "/")
     filename = os.path.basename(normalized)
@@ -30,6 +33,9 @@ def to_public_image_path(path_value: str) -> str:
 def to_disk_image_path(path_value: str) -> str:
     if not path_value:
         return path_value
+    if path_value.startswith("/api/v1/ppt/images/"):
+        filename = os.path.basename(path_value)
+        return os.path.join(get_images_directory(), filename)
     if os.path.isabs(path_value):
         return path_value
     if path_value.startswith("/app_data/images/"):
