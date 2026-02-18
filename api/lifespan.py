@@ -21,7 +21,8 @@ async def app_lifespan(_: FastAPI):
     # Validate and report configuration on startup
     setup_config_logging()
     
-    os.makedirs(get_app_data_directory_env(), exist_ok=True)
+    app_data_dir = get_app_data_directory_env() or "/tmp/surge-pptx"
+    os.makedirs(app_data_dir, exist_ok=True)
     await create_db_and_tables()
     await check_llm_and_image_provider_api_or_model_availability()
     yield
