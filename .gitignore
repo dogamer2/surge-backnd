@@ -1,0 +1,6 @@
+.env
+__pycache__/
+*.pyc
+app_data/
+chroma/
+.DS_Store
